@@ -1,21 +1,25 @@
 [build-system]
-requires = ["setuptools>=69", "wheel"]
+requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "recommendation-engine"
-version = "0.1.0"
-description = "Production-oriented recommendation system project."
+name = "movie-recommendation-engine"
+version = "1.0.0"
+description = "Movie recommendation engine using popularity, content-based, collaborative filtering, and hybrid recommendation models."
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.12,<3.15"
 
-[tool.pytest.ini_options]
-pythonpath = ["."]
-testpaths = ["tests"]
+dependencies = [
+    "numpy>=1.26,<3.0",
+    "pandas>=2.2,<3.0",
+    "scipy>=1.13,<2.0",
+    "scikit-learn>=1.5,<2.0",
+    "implicit>=0.7.2,<1.0",
+    "joblib>=1.4,<2.0",
+    "fastapi>=0.115,<1.0",
+    "uvicorn>=0.30,<1.0"
+]
 
-[tool.ruff]
-line-length = 88
-target-version = "py312"
-
-[tool.ruff.lint]
-select = ["E", "F", "I"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
