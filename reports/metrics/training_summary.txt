@@ -1,0 +1,5 @@
+Recommendation Engine Training Summary
+======================================
+Popularity model: trained
+Content-based model: trained
+Collaborative model: trained

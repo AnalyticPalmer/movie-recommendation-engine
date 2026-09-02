@@ -1,0 +1,16 @@
+project:
+  name: recommendation-engine
+  version: 0.1.0
+
+paths:
+  raw_data: data/raw
+  interim_data: data/interim
+  processed_data: data/processed
+  external_data: data/external
+  models: models
+  figures: reports/figures
+  metrics: reports/metrics
+
+logging:
+  level: INFO
+  directory: logs

@@ -1,0 +1,20 @@
+{
+    "ratings_rows": 100000,
+    "movies_rows": 1682,
+    "unique_users": 943,
+    "unique_movies": 1682,
+    "missing_user_ids": 0,
+    "missing_movie_ids": 0,
+    "missing_ratings": 0,
+    "duplicate_ratings": 0,
+    "duplicate_movies": 0,
+    "invalid_ratings": 0,
+    "average_interactions_per_user": 106.04453870625663,
+    "median_interactions_per_user": 65.0,
+    "average_interactions_per_movie": 59.45303210463734,
+    "matrix_sparsity_percent": 93.69533063577546,
+    "movies_missing_metadata": 0,
+    "users_with_less_than_5_interactions": 0,
+    "movies_with_less_than_5_interactions": 333,
+    "validation_passed": true
+}
