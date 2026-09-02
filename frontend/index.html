@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <title>CineMatch AI</title>
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="./style.css"
+    >
+</head>
+
+<body>
+    <div class="background-glow background-glow-one"></div>
+    <div class="background-glow background-glow-two"></div>
+
+    <header class="navbar">
+        <div class="brand">
+            <div class="brand-mark">
+                C
+            </div>
+
+            <div>
+                <div class="brand-name">
+                    CineMatch
+                </div>
+                <div class="brand-subtitle">
+                    AI Movie Discovery
+                </div>
+            </div>
+        </div>
+
+        <div class="api-status">
+            <span class="status-dot"></span>
+            Live Recommendation API
+        </div>
+    </header>
+
+    <main class="page-shell">
+        <section class="hero">
+            <div class="hero-badge">
+                <span class="badge-icon">✦</span>
+                Intelligent Movie Discovery
+            </div>
+
+            <h1>
+                Find your next
+                <span>favorite movie.</span>
+            </h1>
+
+            <p>
+                Discover movies through intelligent recommendation models
+                trained on real audience behavior and movie metadata.
+            </p>
+
+            <div class="hero-stats">
+                <div class="stat">
+                    <strong>1,682</strong>
+                    <span>Movies</span>
+                </div>
+
+                <div class="stat-divider"></div>
+
+                <div class="stat">
+                    <strong>100K</strong>
+                    <span>Ratings</span>
+                </div>
+
+                <div class="stat-divider"></div>
+
+                <div class="stat">
+                    <strong>AI</strong>
+                    <span>Powered</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="workspace">
+            <div class="search-card">
+                <div class="card-header">
+                    <div>
+                        <span class="section-label">
+                            Similarity Engine
+                        </span>
+
+                        <h2>
+                            Discover similar movies
+                        </h2>
+
+                        <p>
+                            Enter a MovieLens movie ID and let the
+                            recommendation engine find closely related titles.
+                        </p>
+                    </div>
+
+                    <div class="search-icon">
+                        ✦
+                    </div>
+                </div>
+
+                <form
+                    id="similarForm"
+                    class="search-form"
+                >
+                    <div class="field-group">
+                        <label for="movieId">
+                            Movie ID
+                        </label>
+
+                        <input
+                            id="movieId"
+                            type="number"
+                            min="1"
+                            placeholder="Example: 50"
+                            required
+                        >
+                    </div>
+
+                    <div class="field-group compact">
+                        <label for="topK">
+                            Results
+                        </label>
+
+                        <select id="topK">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                        </select>
+                    </div>
+
+                    <button
+                        id="similarButton"
+                        class="primary-button"
+                        type="submit"
+                    >
+                        <span>
+                            Find Movies
+                        </span>
+                        <span class="button-arrow">
+                            →
+                        </span>
+                    </button>
+                </form>
+
+                <div class="quick-example">
+                    Try:
+                    <button
+                        type="button"
+                        class="example-chip"
+                        data-movie-id="50"
+                    >
+                        Star Wars · ID 50
+                    </button>
+                </div>
+            </div>
+
+            <div class="popular-card">
+                <div>
+                    <span class="section-label">
+                        Trending Picks
+                    </span>
+
+                    <h2>
+                        Popular right now
+                    </h2>
+
+                    <p>
+                        Explore highly rated movies with strong audience activity.
+                    </p>
+                </div>
+
+                <button
+                    id="popularButton"
+                    class="secondary-button"
+                    type="button"
+                >
+                    Explore Popular
+                </button>
+            </div>
+        </section>
+
+        <section class="results-section">
+            <div class="results-header">
+                <div>
+                    <span class="section-label">
+                        Recommendation Results
+                    </span>
+
+                    <h2 id="resultsTitle">
+                        Your recommendations
+                    </h2>
+                </div>
+
+                <div
+                    id="resultCount"
+                    class="result-count"
+                ></div>
+            </div>
+
+            <div
+                id="status"
+                class="status-message"
+            ></div>
+
+            <div
+                id="results"
+                class="results-grid"
+            >
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        ✦
+                    </div>
+
+                    <h3>
+                        Ready when you are
+                    </h3>
+
+                    <p>
+                        Search for similar movies or explore popular titles.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <span>
+            CineMatch AI
+        </span>
+
+        <span>
+            Powered by FastAPI · Scikit-learn · Vercel
+        </span>
+    </footer>
+
+    <script src="./app.js"></script>
+</body>
+</html>
