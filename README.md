@@ -6,11 +6,15 @@
 ![Vercel](https://img.shields.io/badge/Deployment-Vercel-black)
 ![Status](https://img.shields.io/badge/Status-Active%20Development-yellow)
 
-CineMatch AI is a production-oriented movie recommendation system built with Python, machine learning, FastAPI, and a responsive frontend.
+CineMatch AI is a production-oriented movie recommendation system built with Python, machine learning, FastAPI, and a responsive web interface.
 
-The project started from the MovieLens 100K dataset and evolved into a deployed end-to-end recommendation application with multiple recommendation strategies, automated testing, continuous integration, and a live web interface.
+The project uses the MovieLens 100K dataset and implements multiple recommendation strategies, model evaluation, automated testing, continuous integration, API deployment, and a live frontend.
 
-## Live Application
+## Preview
+
+![CineMatch AI Frontend](assets/cinematch-home.png)
+
+## Live Demo
 
 Frontend:
 
@@ -24,32 +28,87 @@ Health Check:
 
 https://movie-recommendation-engine-nu.vercel.app/api/health
 
-## Features
+FastAPI Documentation:
+
+https://movie-recommendation-engine-nu.vercel.app/docs
+
+## Key Features
 
 - Popularity-based movie recommendations
 - Content-based movie similarity
 - Collaborative filtering using Alternating Least Squares
-- Hybrid recommendation system
-- Temporal leave-one-out train/test split
+- Hybrid recommendation model
+- Temporal leave-one-out data splitting
 - Recommender-system evaluation
-- FastAPI inference API
+- FastAPI prediction service
 - Responsive CineMatch AI frontend
-- Vercel deployment
-- Automated API testing
+- Automated API testing with Pytest
 - GitHub Actions continuous integration
-- Model serialization and reusable prediction pipeline
+- Vercel deployment
+- Reusable model and prediction pipelines
+
+## How It Works
+
+A user interacts with the CineMatch frontend and requests either popular movies or movies similar to a selected MovieLens movie.
+
+The frontend sends the request to the deployed FastAPI backend.
+
+FastAPI passes the request to the recommendation pipeline, which loads the appropriate trained model and returns movie recommendations.
+
+The results are converted to JSON and displayed by the frontend.
+
+## Architecture
+
+```mermaid
+flowchart TD
+    A[User] --> B[CineMatch Frontend]
+    B --> C[FastAPI Backend]
+    C --> D[Recommendation Pipeline]
+
+    D --> E[Popularity Model]
+    D --> F[Content-Based Model]
+    D --> G[Collaborative Model]
+    D --> H[Hybrid Model]
+
+    E --> I[MovieLens Data]
+    F --> I
+    G --> I
+    H --> I
+
+    D --> J[Serialized Model Artifacts]
+```
+
+### Production Deployment
+
+```mermaid
+flowchart LR
+    A[Browser] --> B[CineMatch Frontend on Vercel]
+    B --> C[FastAPI API on Vercel]
+    C --> D[Popularity Model]
+    C --> E[Content-Based Model]
+```
+
+The collaborative and hybrid models are implemented and evaluated locally but are not currently exposed through the Vercel production API because the `implicit` library depends on native OpenMP libraries that are unavailable in the standard Vercel Python runtime.
 
 ## Recommendation Models
 
 ### Popularity-Based Recommender
 
-Ranks movies using a weighted rating approach that balances average rating and rating volume.
+Ranks movies using a weighted scoring method that considers both:
 
-This prevents movies with very few ratings from dominating the recommendations.
+- Average movie rating
+- Number of ratings received
+
+This reduces the chance that movies with very few ratings appear artificially high in the ranking.
 
 ### Content-Based Recommender
 
-Uses movie genre information with TF-IDF feature extraction and cosine similarity.
+Uses movie genre metadata.
+
+The pipeline applies:
+
+- TF-IDF feature extraction
+- Cosine similarity
 
 Example recommendations for `Star Wars (1977)` include:
 
@@ -73,7 +132,7 @@ Configuration:
 
 Combines collaborative filtering and content-based recommendation scores.
 
-During evaluation, the collaborative filtering model slightly outperformed the hybrid model.
+The collaborative model slightly outperformed the hybrid configuration during evaluation.
 
 ## Dataset
 
@@ -84,11 +143,27 @@ Dataset statistics:
 - 100,000 ratings
 - 943 users
 - 1,682 movies
-- 93.7% matrix sparsity
+- 93.7% user-item matrix sparsity
 - No missing user IDs
 - No missing movie IDs
 - No invalid ratings
 - No duplicate ratings
+
+## Data Validation
+
+The validation pipeline checks:
+
+- Missing user IDs
+- Missing movie IDs
+- Missing ratings
+- Duplicate ratings
+- Duplicate movies
+- Invalid ratings
+- Interaction density
+- Missing movie metadata
+- Low-interaction users and movies
+
+The validation stage passed successfully.
 
 ## Data Processing
 
@@ -96,9 +171,9 @@ The preprocessing pipeline:
 
 1. Loads MovieLens ratings and movie metadata
 2. Cleans and validates the data
-3. Creates genre-based movie features
-4. Performs a temporal leave-one-out split
-5. Saves processed training and test datasets
+3. Creates movie genre features
+4. Performs a temporal leave-one-out train/test split
+5. Saves processed datasets for model training and evaluation
 
 Final split:
 
@@ -109,7 +184,7 @@ Each user contributes their latest interaction to the test set.
 
 ## Model Evaluation
 
-Collaborative filtering evaluation at K=10:
+### Collaborative Filtering
 
 | Metric | Score |
 |---|---:|
@@ -118,7 +193,7 @@ Collaborative filtering evaluation at K=10:
 | Hit Rate@10 | 0.1548 |
 | NDCG@10 | 0.0813 |
 
-Hybrid model evaluation:
+### Hybrid Recommender
 
 | Metric | Score |
 |---|---:|
@@ -127,11 +202,15 @@ Hybrid model evaluation:
 | Hit Rate@10 | 0.1463 |
 | NDCG@10 | 0.0802 |
 
-The collaborative filtering model slightly outperformed the hybrid model.
+The collaborative filtering model slightly outperformed the tested hybrid configuration.
 
-## API
+## API Endpoints
 
-The application exposes a FastAPI inference service.
+### Root
+
+```http
+GET /
+```
 
 ### Health Check
 
@@ -151,22 +230,22 @@ GET /api/recommendations/popular?top_k=5
 GET /api/recommendations/similar/50?top_k=5
 ```
 
-Movie ID `50` represents Star Wars in the MovieLens dataset.
+Movie ID `50` represents `Star Wars (1977)` in the MovieLens 100K dataset.
 
 ## Frontend
 
-The CineMatch AI frontend provides:
+The CineMatch AI frontend includes:
 
-- Movie recommendation interface
-- Popular movie exploration
+- Dark cinematic user interface
+- Live API status indicator
 - Similar-movie recommendations
-- Result-count selection
+- Popular movie discovery
+- Recommendation count selection
 - Loading states
 - Error handling
-- Responsive design
-- Dark cinematic interface
+- Responsive layout
 
-The frontend communicates with the deployed FastAPI backend through CORS-enabled API requests.
+The frontend communicates with the deployed FastAPI backend through CORS-enabled HTTP requests.
 
 ## Project Structure
 
@@ -178,6 +257,8 @@ recommendation-engine/
 ├── api/
 │   └── index.py
 ├── app/
+├── assets/
+│   └── cinematch-home.png
 ├── configs/
 ├── data/
 │   ├── raw/
@@ -214,10 +295,15 @@ git clone https://github.com/AnalyticPalmer/movie-recommendation-engine.git
 cd movie-recommendation-engine
 ```
 
-Create and activate a virtual environment:
+Create a virtual environment:
 
 ```powershell
 python -m venv recsys
+```
+
+Activate it:
+
+```powershell
 .\recsys\Scripts\Activate.ps1
 ```
 
@@ -245,7 +331,19 @@ pip install pytest httpx
 uvicorn api.index:app --reload
 ```
 
-Then open:
+Open:
+
+```text
+http://127.0.0.1:8000
+```
+
+Interactive API documentation:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+Health endpoint:
 
 ```text
 http://127.0.0.1:8000/api/health
@@ -259,7 +357,7 @@ From the project root:
 python -m http.server 5500 --directory frontend
 ```
 
-Then open:
+Open:
 
 ```text
 http://127.0.0.1:5500
@@ -267,7 +365,7 @@ http://127.0.0.1:5500
 
 ## Testing
 
-Run the API test suite:
+Run:
 
 ```powershell
 pytest tests/test_api.py -v
@@ -291,7 +389,7 @@ Tests cover:
 
 ## Continuous Integration
 
-GitHub Actions automatically runs the API tests whenever code is pushed to `main` or a pull request targets `main`.
+GitHub Actions automatically runs the API test suite whenever code is pushed to `main` or a pull request targets `main`.
 
 Workflow:
 
@@ -302,12 +400,12 @@ Workflow:
 The CI pipeline:
 
 1. Checks out the repository
-2. Installs Python 3.12
-3. Installs application dependencies
+2. Sets up Python 3.12
+3. Installs project dependencies
 4. Installs test dependencies
-5. Runs the automated API test suite
+5. Runs the API test suite
 
-Current GitHub Actions result:
+Current GitHub Actions status:
 
 ```text
 7 passed
@@ -315,13 +413,27 @@ Current GitHub Actions result:
 
 ## Deployment
 
-The backend is deployed with Vercel using FastAPI.
+### Frontend
 
-The frontend is deployed separately as a static Vercel application.
+Hosted on Vercel:
 
-The production frontend is explicitly allowed by the backend CORS configuration.
+```text
+https://cinematch-ai-henna.vercel.app
+```
+
+### Backend
+
+FastAPI backend hosted on Vercel:
+
+```text
+https://movie-recommendation-engine-nu.vercel.app
+```
+
+The deployed frontend domain is explicitly allowed by the backend CORS configuration.
 
 ## Technology Stack
+
+### Machine Learning
 
 - Python
 - Pandas
@@ -329,13 +441,22 @@ The production frontend is explicitly allowed by the backend CORS configuration.
 - SciPy
 - Scikit-learn
 - Implicit ALS
+- Joblib
+
+### Backend
+
 - FastAPI
 - Uvicorn
-- Joblib
-- Pytest
+
+### Frontend
+
 - HTML
 - CSS
 - JavaScript
+
+### Testing and DevOps
+
+- Pytest
 - Git
 - GitHub
 - GitHub Actions
@@ -343,27 +464,32 @@ The production frontend is explicitly allowed by the backend CORS configuration.
 
 ## Current Limitations
 
-The original recommendation models are trained on the MovieLens 100K dataset.
+The recommendation models were trained using MovieLens 100K.
 
-Because the dataset contains older movies, newly released movies are not currently part of the trained recommendation catalogue.
+Because the dataset contains older movies, newly released movies are not currently included in the trained recommendation catalogue.
 
-The deployed Vercel API currently focuses on popularity and content-based inference because the `implicit` collaborative filtering package depends on native OpenMP libraries that are not available in the standard Vercel Python runtime.
+The current production Vercel API exposes the popularity and content-based recommendation systems.
 
-## Planned Improvements
+Collaborative filtering and hybrid recommendations remain implemented and evaluated locally because the `implicit` library requires native OpenMP support that is unavailable in the standard Vercel Python runtime.
 
-Future improvements include:
+## Roadmap
+
+Planned improvements:
 
 - Search movies by title instead of MovieLens ID
-- Search autocomplete
-- Movie posters and backdrop images
+- Movie-title autocomplete
+- Movie posters
+- Backdrop images
 - TMDB metadata integration
 - Current and newly released movie catalogue
-- Movie descriptions and ratings
-- Genre filters
-- Improved recommendation cards
-- Updated recommendation dataset
-- Collaborative filtering deployment on a compatible container-based platform
-- User profiles and personalized recommendation history
+- Movie overviews and release dates
+- External ratings
+- Genre filtering
+- Improved recommendation result cards
+- Newer recommendation dataset
+- Container-based deployment for collaborative filtering
+- User profiles
+- Personalized recommendation history
 
 ## Author
 
@@ -377,4 +503,4 @@ https://github.com/AnalyticPalmer
 
 Active development.
 
-The recommendation engine, API, frontend, deployment, automated tests, and CI pipeline are operational.
+The recommendation engine, frontend, FastAPI backend, production deployment, automated testing, and continuous integration pipeline are operational.
