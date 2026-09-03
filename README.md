@@ -1,10 +1,10 @@
+# CineMatch AI — Movie Recommendation Engine
+
 [![Tests](https://github.com/AnalyticPalmer/movie-recommendation-engine/actions/workflows/tests.yml/badge.svg)](https://github.com/AnalyticPalmer/movie-recommendation-engine/actions/workflows/tests.yml)
 ![Python](https://img.shields.io/badge/Python-3.12-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-API-009688)
 ![Vercel](https://img.shields.io/badge/Deployment-Vercel-black)
 ![Status](https://img.shields.io/badge/Status-Active%20Development-yellow)
-
-# CineMatch AI — Movie Recommendation Engine
 
 CineMatch AI is a production-oriented movie recommendation system built with Python, machine learning, FastAPI, and a responsive frontend.
 
