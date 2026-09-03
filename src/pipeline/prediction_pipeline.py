@@ -62,6 +62,44 @@ class RecommendationPipeline:
             top_k=top_k,
         )
 
+    def search_movies(
+        self,
+        query,
+        limit=10,
+    ):
+        if not isinstance(query, str):
+            raise TypeError(
+                "query must be a string."
+            )
+
+        query = query.strip()
+
+        if not query:
+            raise ValueError(
+                "query cannot be empty."
+            )
+
+        self._validate_top_k(limit)
+
+        model = self.load_content_model()
+
+        movies = model.movies[
+            model.movies["title"].str.contains(
+                query,
+                case=False,
+                na=False,
+                regex=False,
+            )
+        ][
+            [
+                "movie_id",
+                "title",
+                "genres",
+            ]
+        ].copy()
+
+        return movies.head(limit)
+
     @staticmethod
     def _validate_model_path(model_path):
         if not model_path.exists():

@@ -106,8 +106,8 @@
                         </h2>
 
                         <p>
-                            Enter a MovieLens movie ID and let the
-                            recommendation engine find closely related titles.
+                            Search by movie title and let the recommendation
+                            engine find closely related films.
                         </p>
                     </div>
 
@@ -121,17 +121,24 @@
                     class="search-form"
                 >
                     <div class="field-group">
-                        <label for="movieId">
-                            Movie ID
+                        <label for="movieSearch">
+                            Movie Title
                         </label>
 
-                        <input
-                            id="movieId"
-                            type="number"
-                            min="1"
-                            placeholder="Example: 50"
-                            required
-                        >
+                        <div class="movie-search-wrapper">
+                            <input
+                                id="movieSearch"
+                                type="text"
+                                placeholder="Example: Star Wars"
+                                autocomplete="off"
+                                required
+                            >
+
+                            <div
+                                id="searchSuggestions"
+                                class="search-suggestions"
+                            ></div>
+                        </div>
                     </div>
 
                     <div class="field-group compact">
@@ -165,9 +172,10 @@
                     <button
                         type="button"
                         class="example-chip"
+                        data-movie-title="Star Wars (1977)"
                         data-movie-id="50"
                     >
-                        Star Wars · ID 50
+                        Star Wars
                     </button>
                 </div>
             </div>
@@ -234,7 +242,7 @@
                     </h3>
 
                     <p>
-                        Search for similar movies or explore popular titles.
+                        Search for a movie or explore popular titles.
                     </p>
                 </div>
             </div>

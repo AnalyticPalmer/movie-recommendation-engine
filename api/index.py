@@ -45,6 +45,44 @@ def health():
     }
 
 
+@app.get("/api/movies/search")
+def search_movies(
+    query: str = Query(
+        min_length=1,
+    ),
+    limit: int = Query(
+        default=10,
+        ge=1,
+        le=50,
+    ),
+):
+    try:
+        movies = pipeline.search_movies(
+            query=query,
+            limit=limit,
+        )
+
+        return {
+            "query": query,
+            "count": len(movies),
+            "movies": movies.to_dict(
+                orient="records"
+            ),
+        }
+
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=400,
+            detail=str(exc),
+        ) from exc
+
+    except Exception as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=str(exc),
+        ) from exc
+
+
 @app.get("/api/recommendations/popular")
 def popular_recommendations(
     top_k: int = Query(
