@@ -8,8 +8,8 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.pipeline.prediction_pipeline import RecommendationPipeline
-
 from src.services.movie_enrichment_service import MovieEnrichmentService
+
 
 app = FastAPI(
     title="Movie Recommendation Engine API",
@@ -30,7 +30,14 @@ app.add_middleware(
 )
 
 pipeline = RecommendationPipeline()
-enrichment_service = MovieEnrichmentService()
+
+
+def get_enrichment_service():
+    try:
+        return MovieEnrichmentService()
+    except ValueError:
+        return None
+
 
 @app.get("/")
 def root():
@@ -42,7 +49,10 @@ def root():
 @app.get("/api/health")
 def health():
     return {
-        "status": "healthy"
+        "status": "healthy",
+        "tmdb_configured": bool(
+            os.getenv("TMDB_ACCESS_TOKEN")
+        ),
     }
 
 
@@ -90,35 +100,28 @@ def popular_recommendations(
         default=10,
         ge=1,
         le=100,
-    )
+    ),
 ):
     try:
         recommendations = pipeline.recommend_popular(
             top_k=top_k
         )
 
-        enriched_recommendations = enrichment_service.enrich_movies(
-            recommendations
-        )
+        enrichment_service = get_enrichment_service()
 
-        return {
-            "model": "popularity",
-            "count": len(enriched_recommendations),
-            "recommendations": enriched_recommendations,
-        }
-
-    except Exception as exc:
-        raise HTTPException(
-            status_code=500,
-            detail=str(exc),
-        ) from exc
-
-        return {
-            "model": "popularity",
-            "count": len(recommendations),
-            "recommendations": recommendations.to_dict(
+        if enrichment_service:
+            results = enrichment_service.enrich_movies(
+                recommendations
+            )
+        else:
+            results = recommendations.to_dict(
                 orient="records"
-            ),
+            )
+
+        return {
+            "model": "popularity",
+            "count": len(results),
+            "recommendations": results,
         }
 
     except Exception as exc:
@@ -143,13 +146,22 @@ def similar_recommendations(
             top_k=top_k,
         )
 
+        enrichment_service = get_enrichment_service()
+
+        if enrichment_service:
+            results = enrichment_service.enrich_movies(
+                recommendations
+            )
+        else:
+            results = recommendations.to_dict(
+                orient="records"
+            )
+
         return {
             "model": "content_based",
             "movie_id": movie_id,
-            "count": len(recommendations),
-            "recommendations": recommendations.to_dict(
-                orient="records"
-            ),
+            "count": len(results),
+            "recommendations": results,
         }
 
     except ValueError as exc:
