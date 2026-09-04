@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.pipeline.prediction_pipeline import RecommendationPipeline
 
+from src.services.movie_enrichment_service import MovieEnrichmentService
 
 app = FastAPI(
     title="Movie Recommendation Engine API",
@@ -29,7 +30,7 @@ app.add_middleware(
 )
 
 pipeline = RecommendationPipeline()
-
+enrichment_service = MovieEnrichmentService()
 
 @app.get("/")
 def root():
@@ -95,6 +96,22 @@ def popular_recommendations(
         recommendations = pipeline.recommend_popular(
             top_k=top_k
         )
+
+        enriched_recommendations = enrichment_service.enrich_movies(
+            recommendations
+        )
+
+        return {
+            "model": "popularity",
+            "count": len(enriched_recommendations),
+            "recommendations": enriched_recommendations,
+        }
+
+    except Exception as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=str(exc),
+        ) from exc
 
         return {
             "model": "popularity",
